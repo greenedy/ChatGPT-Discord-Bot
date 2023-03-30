@@ -1,27 +1,29 @@
 require('dotenv/config');
 const { Client, IntentsBitField } = require('discord.js');
 const { Configuration, OpenAIApi }= require('openai');
+const eventHandler = require('./handlers/eventHandler');
 
+//Create bot
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMembers,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
     ]
 });
 
-client.on('ready', () => {
-    console.log("Bot is online!");
-});
+eventHandler(client);
 
+//OpenAI connection
 const configuration = new Configuration({
     apiKey: process.env.API_KEY,
 });
 const openai = new OpenAIApi(configuration); 
 
 client.on('messageCreate', async (message) => {
-    if(message.author.bot) return;
-    if(message.channel.id !== process.env.CHANNEL_ID) return;
+    if(message.author.bot) return; //Ignore bot messages
+    if(message.channel.id !== process.env.CHANNEL_ID) return; //Ignore messages outside of channel
     if(message.content.startsWith('!')) return;
 
     let conversationLog = [{ role: 'system', content: "You are a friendly sarcastic chatbot." }];
