@@ -19,15 +19,19 @@ module.exports = {
         
         const prompt = interaction.options.get('prompt').value;
         const userId = interaction.user.id;
+        const username = interaction.user.username;
 
-        let conversationLog = [{ role: 'system', content: "You are a friendly sarcastic chatbot." }];
+        //Restating the user prompt
+        await interaction.reply(`<@${userId}>: ${prompt}`);
+
+        await interaction.channel.sendTyping();
+
+        let conversationLog = [{ role: 'system', content: "You are a friendly chatbot." }];
 
         conversationLog.push( {
             role: 'user',
             content: prompt,
         });
-
-        await interaction.deferReply(`asking chatgpt`);
 
         const configuration = new Configuration({
             apiKey: process.env.API_KEY,
@@ -41,6 +45,6 @@ module.exports = {
         });
 
         //reply with chatGPT response
-        await interaction.editReply(result.data.choices[0].message);
+        await interaction.followUp(result.data.choices[0].message);
     },
 };
