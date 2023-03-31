@@ -17,7 +17,7 @@ eventHandler(client);
 
 //OpenAI connection
 const configuration = new Configuration({
-    apiKey: process.env.API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration); 
 
@@ -61,4 +61,4 @@ client.on('messageCreate', async (message) => {
     message.reply(result.data.choices[0].message);
 });
 
-client.login(process.env.Token);
+client.login(process.env.DISCORD_TOKEN);
